@@ -1,0 +1,40 @@
+indicator.name,indicator.tdat
+Gaps 25-50 cm(%),GapPct_25_50
+Gaps 51-100 cm(%),GapPct_51_100
+Gaps 101-200 cm(%),GapPct_101_200
+Gaps > 200 cm(%),GapPct_200_plus
+Gaps > 25 cm(%),GapPct_25_plus
+Bare Soil Cover (First Hit%),BareSoilCover_FH
+Total Foliar Cover (First Hit%),TotalFoliarCover_FH
+NonInv Peren Forb Cover (Any Hit %),NonInvPerenForbCover_AH
+NonInv Ann Forb Cover (Any Hit %),NonInvAnnForbCover_AH
+NonInv Peren Grass Cover (Any Hit %),NonInvPerenGrassCover_AH
+NonInv Ann Grass Cover (Any Hit %),NonInvAnnGrassCover_AH
+NonInv Ann Forb/Grass Cover (Any Hit %),NonInvAnnForbGrassCover_AH
+NonInv Peren Forb/Grass Cover (Any Hit %),NonInvPerenForbGrassCover_AH
+NonInv Succulent Cover (Any Hit %),NonInvSucculentCover_AH
+NonInv Shrub Cover (Any Hit %),NonInvShrubCover_AH
+NonInv Sub-shrub Cover (Any Hit %),NonInvSubShrubCover_AH
+NonInv Tree Cover (Any Hit %),NonInvTreeCover_AH
+Inv Peren Forb Cover (Any Hit %),InvPerenForbCover_AH
+Inv Ann Forb Cover (Any Hit %),InvAnnForbCover_AH
+Inv Peren Grass Cover (Any Hit %),InvPerenGrassCover_AH
+Inv Ann Grass Cover (Any Hit %),InvAnnGrassCover_AH
+Inv Ann Forb/Grass Cover (Any Hit %),InvAnnForbGrassCover_AH
+Inv Peren Forb/Grass Cover (Any Hit %),InvPerenForbGrassCover_AH
+Inv Succulent Cover (Any Hit %),InvSucculentCover_AH
+Inv Shrub Cover (Any Hit %),InvShrubCover_AH
+Inv Sub-shrub Cover (Any Hit %),InvSubShrubCover_AH
+Inv Tree Cover (Any Hit %),InvTreeCover_AH
+Sagebrush Cover (Any Hit%),SagebrushCover_AH
+Woody Hgt Avg (cm),WoodyHgt_Avg
+Herbaceous Hgt Avg (cm),HerbaceousHgt_Avg
+Sagebrush Hgt Avg (cm),SagebrushHgt_Avg
+Other Shrub Hgt Avg (cm),OtherShrubHgt_Avg
+NonInv Peren Grass Hgt Avg (cm),NonInvPerenGrassHgt_Avg
+Inv Peren Grass Hgt Avg (cm),InvPerenGrassHgt_Avg
+Inv Plant Cover (Any Hit %),InvPlantCover_AH
+Number of Inv Plant Sp,InvPlant_NumSp
+Soil Stability All Rating,SoilStability_All
+Soil Stability Protected Surface Rating,SoilStability_Protected
+Soil Stability Unprotected Surface Rating,SoilStability_Unprotected
