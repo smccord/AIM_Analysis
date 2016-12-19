@@ -1,53 +1,53 @@
 library(xlsx)
 library(dplyr)
 library(rgdal)
+library(tidyr)
 
-## TODO: Bring in the relevant TerrADat data and call it tdat
-## TODO: Make sure tdat gets assigned a column for the reporting stratum (assumed in this code to be called Reporting.Stratum)
+## TODO: Handle missing minimum required percentage of landscape values. If there's nothing, just be cool/substitute 0?
+## TODO: Make sure that it only deals with rows where indicators are valid/selected and the top and bottom evalutions have been set
+## TODO: Flag plots that don't end up with classifications?
 
 ## Get TerrADat imported
-terradat.spdf <- readOGR(dsn = "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/AIM_Reference/Terradat_data_8.17.15_complete.gdb", layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
-terradat.prj <- proj4string(terradat.spdf)
-tdat <- terradat.spdf@data
+terradat.terrestrial.spdf <- readOGR(dsn = "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/AIM_Reference/Terradat_data_8.17.15_complete.gdb", layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
+terradat.remote.spdf <- readOGR(dsn = "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/AIM_Reference/Terradat_data_8.17.15_complete.gdb", layer = "SV_IND_REMOTESENSING", stringsAsFactors = F)
+terradat.prj <- proj4string(terradat.terrestrial.spdf)
+tdat <- merge(terradat.terrestrial.spdf@data, terradat.remote.spdf@data)
 
-indicator.lut <- read.csv("C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/tdat_indicator_lut.csv", stringsAsFactors = F)
+indicator.lut <- read.csv("C:/Users/nstauffe/Documents/Projects/AIM_Analysis/tdat_indicator_lut.csv", stringsAsFactors = F)
 
 ## Import the spreadsheet from the workbook. Should work regardless of presence/absence of other spreadsheets as long as the name is the same
-benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Downloads/TerrestrialAIM_DataAnalysis_Template.xlsx",
+benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Downloads/TerrestrialAIM_DataAnalysis_Template_NS191216.xlsx",
                     sheetName = "Monitoring Objectives",
-                    header = F,
+                    header = T,
                     stringsAsFactors = F)
 
-## Strip out the extraneous columns and rows
-benchmarks <- benchmarks.raw[3:nrow(benchmarks.raw), 1:10]
-
-## Rename the remaining columns
-names(benchmarks) <- c("Management.Question", "Condition.Source", "Reporting.Stratum", "Lower.Limit.Value", "Lower.Limit.Operator", "Indicator.Name", "Upper.Limit.Operator", "Upper.Limit.Value", "Units", "Minimum.Proportion")
-
-## Keep only rows where an indicator was specified and it wasn't the example row included in the spreadsheet to guide users
-benchmarks <- benchmarks[!grepl(x = benchmarks$Management.Question, pattern = "^[Ee].g.") & !is.na(benchmarks$Indicator),]
+## Strip out the extraneous columns and rows, which includes if they left the example in there
+benchmarks <- benchmarks.raw[!grepl(x = benchmarks.raw$Management.Question, pattern = "^[Ee].g.") & !is.na(benchmarks.raw$Indicator), 1:11]
 
 ## Create the two evaluations. The way the spreadsheet is configured, there should be no rows without both defined
-benchmarks$eval.string.lower <- paste0(benchmarks$Lower.Limit.Value, benchmarks$Lower.Limit.Operator)
-benchmarks$eval.string.upper <- paste0(benchmarks$Upper.Limit.Operator, benchmarks$Upper.Limit.Value)
+benchmarks$eval.string.lower <- paste0(benchmarks$Lower.Limit, benchmarks$LL.Relation)
+benchmarks$eval.string.upper <- paste0(benchmarks$UL.Relation, benchmarks$Upper.Limit)
 
 ## Reorder the data frame
-benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator.Name", by.y = "indicator.name") %>%
-  .[,c("Management.Question", "Condition.Source", "Reporting.Stratum", "Lower.Limit.Value", "Lower.Limit.Operator", "Indicator.Name", "Upper.Limit.Operator", "Upper.Limit.Value", "Units", "Minimum.Proportion", "eval.string.lower", "eval.string.upper", "indicator.tdat")]
+benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name") %>%
+  .[,c("Management.Question", "Benchmark.Source", "Evaluation.Stratum", "Lower.Limit", "LL.Relation", "Indicator", "UL.Relation", "Upper.Limit", "Unit", "Classification", "Minimum.Proportion", "eval.string.lower", "eval.string.upper", "indicator.tdat")]
 
 ## Slicing the data frame from terradat.spdf
+## Not technically necessary
 tdat <- terradat.spdf@data[grepl(x = terradat.spdf@data$ProjectName, pattern = "rgdnnm", ignore.case = T),]
 
-## TODO: Proper assignment of reporting stratum identities
-tdat$Reporting.Stratum <- "Test"
+## To properly assign, see eval_stratum_attribution_functions.R
+tdat$Evaluation.Stratum <- "Loamy"
+
+## Strip out the ones without evaluation strata
+tdat <- tdat[!is.na(tdat$Evaluation.Stratum),]
 
 ## Making a tall version of the data frame
 tdat.tall <- gather(tdat, Indicator, Value,
                     GapPct_25_50,GapPct_51_100,GapPct_101_200,GapPct_200_plus,GapPct_25_plus,BareSoilCover_FH,TotalFoliarCover_FH,NonInvPerenForbCover_AH,NonInvAnnForbCover_AH,NonInvPerenGrassCover_AH,NonInvAnnGrassCover_AH,NonInvAnnForbGrassCover_AH,NonInvPerenForbGrassCover_AH,NonInvSucculentCover_AH,NonInvShrubCover_AH,NonInvSubShrubCover_AH,NonInvTreeCover_AH,InvPerenForbCover_AH,InvAnnForbCover_AH,InvPerenGrassCover_AH,InvAnnGrassCover_AH,InvAnnForbGrassCover_AH,InvPerenForbGrassCover_AH,InvSucculentCover_AH,InvShrubCover_AH,InvSubShrubCover_AH,InvTreeCover_AH,SagebrushCover_AH,WoodyHgt_Avg,HerbaceousHgt_Avg,SagebrushHgt_Avg,OtherShrubHgt_Avg,NonInvPerenGrassHgt_Avg,InvPerenGrassHgt_Avg,InvPlantCover_AH,InvPlant_NumSp,SoilStability_All,SoilStability_Protected,SoilStability_Unprotected)
 
 ## Merge the tall TerrADat with the benchmark information
-tdat.tall.benched <- merge(x = tdat.tall, y = benchmarks, by.x = c("Reporting.Stratum", "Indicator"), by.y = c("Reporting.Stratum", "indicator.tdat")) %>%
-  .[!is.na(.["Lower.Limit.Value"]),]
+tdat.tall.benched <- merge(x = tdat.tall, y = benchmarks[, c("Evaluation.Stratum", "indicator.tdat", "Classification", "eval.string.lower", "eval.string.upper")], by.x = c("Evaluation.Stratum", "Indicator"), by.y = c("Evaluation.Stratum", "indicator.tdat"))
 
 tdat.tall.benched$eval.string.lower <- paste0(tdat.tall.benched$eval.string.lower, tdat.tall.benched$Value)
 tdat.tall.benched$eval.string.upper <- paste0(tdat.tall.benched$Value, tdat.tall.benched$eval.string.upper)
@@ -57,9 +57,9 @@ parser <- function(string){
   return(eval(parse(text = string)))
 }
 
-## Use lapply to add columns for whether or not the given indicator met the upper and lower benchmark values
-tdat.tall.benched$meeting.lower <- lapply(tdat.tall.benched$eval.string.lower, parser) %>% unlist()
-tdat.tall.benched$meeting.upper <- lapply(tdat.tall.benched$eval.string.upper, parser) %>% unlist()
 ## Falling within the upper and lower bounds?
-tdat.tall.benched$meeting <- tdat.tall.benched$meeting.lower & tdat.tall.benched$meeting.upper
+tdat.tall.benched$meeting <- lapply(tdat.tall.benched$eval.string.lower, parser) %>% unlist() & lapply(tdat.tall.benched$eval.string.upper, parser) %>% unlist()
+
+## Because all the benchmark classifications should be mutually exclusive, applying the vector from meeting should result in one row per indicator per plot
+output <- tdat.tall.benched[tdat.tall.benched$meeting, c("PrimaryKey", "PlotID", "Evaluation.Stratum", "Indicator", "Value", "Classification")]
 
