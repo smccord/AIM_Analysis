@@ -12,7 +12,7 @@
 
 ## TODO: Function to make sure that no plot has received more than one evaluation stratum if multiple attribution functions were used
 
-## TODO: Shapefile attribute extraction function where the shapefile attribute table contains the evaluation stratum (possibly strata)
+## Shapefile attribute extraction function where the shapefile attribute table contains the evaluation stratum (possibly strata)
 attribute.shapefile <- function(points = SpatialPointsDataFrame( coords = matrix(1:2,1:2), data = data.frame(matrix(1:2,1:2))),
                                 datapath = "", ## If the shape is in a .gdb feature class then this should be the full path, including the file extension .gdb. If the SPDF is already made, do not specify this argument
                                 shape = "", ## The name of the shapefile or feature class !!!OR!!! an SPDF
@@ -36,7 +36,7 @@ attribute.shapefile <- function(points = SpatialPointsDataFrame( coords = matrix
   return(cbind(points, points.evalstrata))
 }
 
-## TODO: Function to import .csv or .xlsx that attributes the plots matching the PLOT column with evaluation strata from the EVAL.STRATUM column
+## Function to import .csv that attributes the plots matching the PLOT column with evaluation strata from the EVAL.STRATUM column
 attribute.list <- function(points = points = SpatialPointsDataFrame( coords = matrix(1:2,1:2), data = data.frame(matrix(1:2,1:2))),
                            datapath = "", ## Only specify if you need to read in the lookup table from a file
                            lut = "" ## Either the filename !!!OR!!! a data frame. Either way it needs a PlotID column and an Evaluation.Stratum column
@@ -44,6 +44,7 @@ attribute.list <- function(points = points = SpatialPointsDataFrame( coords = ma
   ## Sanitize the input
   datapath <- str_replace(datapath, pattern =  "/$", replacement = "")
   if ((datapath == "" | is.null) & is.data.frame(lut)) {
+    ## The format of the lookup table needs to include these two fields
     lut <- lut[, c("PlotID", "Evaluation.Stratum")]
   } else if (!is.data.frame(lut) & grepl(x = lut, pattern = "\\.[Cc][Ss][Vv]$")) {
     lut <- read.csv(paste0(datapath, "/", lut), stringsAsFactors = F)[, c("PlotID", "Evaluation.Stratum")]
@@ -59,6 +60,7 @@ attribute.field <- function(points = points = SpatialPointsDataFrame( coords = m
   ## Sanitize the input
   datapath <- str_replace(datapath, pattern =  "/$", replacement = "")
   if ((datapath == "" | is.null) & is.data.frame(lut)) {
+    ## The format of the lookup table needs to include these three fields
     lut <- lut[, c("Attribute.Field", "Field.Value", "Evaluation.Stratum")]
   } else if (!is.data.frame(lut) & grepl(x = lut, pattern = "\\.[Cc][Ss][Vv]$")) {
     lut <- read.csv(paste0(datapath, "/", lut), stringsAsFactors = F)[, c("Attribute.Field", "Field.Value", "Evaluation.Stratum")]
