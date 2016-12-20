@@ -7,28 +7,38 @@ library(tidyr)
 ## TODO: Make sure that it only deals with rows where indicators are valid/selected and the top and bottom evalutions have been set
 ## TODO: Flag plots that don't end up with classifications?
 
-## Get TerrADat imported
-terradat.terrestrial.spdf <- readOGR(dsn = "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/AIM_Reference/Terradat_data_8.17.15_complete.gdb", layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
-terradat.remote.spdf <- readOGR(dsn = "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/AIM_Reference/Terradat_data_8.17.15_complete.gdb", layer = "SV_IND_REMOTESENSING", stringsAsFactors = F)
-terradat.prj <- proj4string(terradat.terrestrial.spdf)
-tdat <- merge(terradat.terrestrial.spdf@data, terradat.remote.spdf@data)
+data.path <- "C:/Users/nstauffe/Documents/Projects/AIM_Analysis"
+tdat.path <- "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/Terradat_data_8.17.15_complete.gdb"
+benchmarks.filename <- "TerrestrialAIM_DataAnalysis_Template.xlsx"
+tdat.indicators.lut <- "tdat_indicator_lut.csv"
 
-indicator.lut <- read.csv("C:/Users/nstauffe/Documents/Projects/AIM_Analysis/tdat_indicator_lut.csv", stringsAsFactors = F)
+## Get TerrADat imported
+tdat.terrestrial.spdf <- readOGR(dsn = tdat.path, layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
+tdat.remote.spdf <- readOGR(dsn = tdat.path, layer = "SV_IND_REMOTESENSING", stringsAsFactors = F)
+tdat.prj <- proj4string(tdat.terrestrial.spdf)
+tdat.spdf <- merge(tdat.terrestrial.spdf, tdat.remote.spdf)
+tdat <- tdat.spdf@data
+
+indicator.lut <- read.csv(paste0(data.path, "/", tdat.indicators.lut), stringsAsFactors = F)
 
 ## Import the spreadsheet from the workbook. Should work regardless of presence/absence of other spreadsheets as long as the name is the same
-benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Documents/Projects/AIM_Analysis/TerrestrialAIM_DataAnalysis_Template.xlsx",
+benchmarks.raw <- read.xlsx(file = paste0(data.path, "/", benchmarks.filename),
                     sheetName = "Monitoring Objectives",
                     header = T,
                     stringsAsFactors = F)
 
 ## Strip out the extraneous columns and rows, which includes if they left the example in there
-benchmarks <- benchmarks.raw[!grepl(x = benchmarks.raw$Management.Question, pattern = "^[Ee].g.") & !is.na(benchmarks.raw$Indicator), 1:11]
+benchmarks <- benchmarks.raw[!grepl(x = benchmarks.raw$Management.Question, pattern = "^[Ee].g.") & !is.na(benchmarks.raw$Indicator), 1:12]
 
-## Create the two evaluations. The way the spreadsheet is configured, there should be no rows without both defined
+## Create the evaluations for the upper and lower limits of each benchmark.
+## The way the spreadsheet is configured, there should be no rows without both defined
 benchmarks$eval.string.lower <- paste0(benchmarks$Lower.Limit, benchmarks$LL.Relation)
 benchmarks$eval.string.upper <- paste0(benchmarks$UL.Relation, benchmarks$Upper.Limit)
 
-## Reorder the data frame
+## Create an evaluation string for future use with the required proportion and its relationship
+benchmarks$eval.string.proportion <- paste0(benchmarks$Proprtion.Relation, benchmarks$Required.Proportion)
+
+## For each benchmark add in the name of the field in TerrADat that corresponds
 benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name")
 
 ## Slicing the data frame from terradat.spdf
@@ -74,7 +84,7 @@ tdat.tall.benched <- merge(x = tdat.tall, y = benchmarks[, c("Evaluation.Stratum
 tdat.tall.benched$eval.string.lower <- paste0(tdat.tall.benched$eval.string.lower, tdat.tall.benched$Value)
 tdat.tall.benched$eval.string.upper <- paste0(tdat.tall.benched$Value, tdat.tall.benched$eval.string.upper)
 
-## To put into my lapply()
+## To put into my lapply(), a function that evaluates a parsed text string like the ones in $eval.string.upper and lower
 parser <- function(string){
   return(eval(parse(text = string)))
 }
