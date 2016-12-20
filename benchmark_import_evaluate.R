@@ -43,8 +43,30 @@ tdat$Evaluation.Stratum <- "Loamy"
 tdat <- tdat[!is.na(tdat$Evaluation.Stratum),]
 
 ## Making a tall version of the data frame
+## Indicators listed in order of appearance in TerrADat, line breaks inserted at thematic breaks
 tdat.tall <- gather(tdat, Indicator, Value,
-                    GapPct_25_50,GapPct_51_100,GapPct_101_200,GapPct_200_plus,GapPct_25_plus,BareSoilCover_FH,TotalFoliarCover_FH,NonInvPerenForbCover_AH,NonInvAnnForbCover_AH,NonInvPerenGrassCover_AH,NonInvAnnGrassCover_AH,NonInvAnnForbGrassCover_AH,NonInvPerenForbGrassCover_AH,NonInvSucculentCover_AH,NonInvShrubCover_AH,NonInvSubShrubCover_AH,NonInvTreeCover_AH,InvPerenForbCover_AH,InvAnnForbCover_AH,InvPerenGrassCover_AH,InvAnnGrassCover_AH,InvAnnForbGrassCover_AH,InvPerenForbGrassCover_AH,InvSucculentCover_AH,InvShrubCover_AH,InvSubShrubCover_AH,InvTreeCover_AH,SagebrushCover_AH,WoodyHgt_Avg,HerbaceousHgt_Avg,SagebrushHgt_Avg,OtherShrubHgt_Avg,NonInvPerenGrassHgt_Avg,InvPerenGrassHgt_Avg,InvPlantCover_AH,InvPlant_NumSp,SoilStability_All,SoilStability_Protected,SoilStability_Unprotected)
+                    ## Terrestrial AIM values first
+                    GapPct_25_50,GapPct_51_100,GapPct_101_200,GapPct_200_plus,GapPct_25_plus,
+                    BareSoilCover_FH,TotalFoliarCover_FH,
+                    NonInvPerenForbCover_AH,NonInvAnnForbCover_AH,NonInvPerenGrassCover_AH,NonInvAnnGrassCover_AH,NonInvAnnForbGrassCover_AH,NonInvPerenForbGrassCover_AH,
+                    NonInvSucculentCover_AH,NonInvShrubCover_AH,NonInvSubShrubCover_AH,NonInvTreeCover_AH,
+                    InvPerenForbCover_AH,InvAnnForbCover_AH,InvPerenGrassCover_AH,InvAnnGrassCover_AH,InvAnnForbGrassCover_AH,InvPerenForbGrassCover_AH,
+                    InvSucculentCover_AH,InvShrubCover_AH,InvSubShrubCover_AH,InvTreeCover_AH,
+                    SagebrushCover_AH,
+                    WoodyHgt_Avg,HerbaceousHgt_Avg,SagebrushHgt_Avg,OtherShrubHgt_Avg,
+                    NonInvPerenGrassHgt_Avg,InvPerenGrassHgt_Avg,
+                    InvPlantCover_AH,
+                    InvPlant_NumSp,
+                    SoilStability_All,SoilStability_Protected,SoilStability_Unprotected,
+                    ## Remote sensing values
+                    HerbLitterCover_FH,WoodyLitterCover_FH,EmbLitterCover_FH,TotalLitterCover_FH,
+                    RockCover_FH,BiologicalCrustCover_FH,VagrLichenCover_FH,LichenMossCover_FH,
+                    DepSoilCover_FH,WaterCover_FH,
+                    NonInvPerenForbCover_FH,NonInvAnnForbCover_FH,NonInvPerenGrassCover_FH,NonInvAnnGrassCover_FH,
+                    NonInvSucculentCover_FH,NonInvShrubCover_FH,NonInvSubShrubCover_FH,NonInvTreeCover_FH,
+                    InvPerenForbCover_FH,InvAnnForbCover_FH,InvPerenGrassCover_FH,InvAnnGrassCover_FH,
+                    InvSucculentCover_FH,InvShrubCover_FH,InvSubShrubCover_FH,InvTreeCover_FH,
+                    SageBrushCover_FH)
 
 ## Merge the tall TerrADat with the benchmark information
 tdat.tall.benched <- merge(x = tdat.tall, y = benchmarks[, c("Evaluation.Stratum", "indicator.tdat", "Classification", "eval.string.lower", "eval.string.upper")], by.x = c("Evaluation.Stratum", "Indicator"), by.y = c("Evaluation.Stratum", "indicator.tdat"))
