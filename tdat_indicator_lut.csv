@@ -43,5 +43,24 @@ Soil Stability Unprotected Surface Rating,SoilStability_Unprotected,Unprotected 
 ,TotalLitterCover_FH,Between-Canopy Herbaceous and Woody Litter (%),Remote Sensing
 ,RockCover_FH,Between-Canopy Rock Cover (%),Remote Sensing
 ,BiologicalCrustCover_FH,Between-Canopy Biological Crust Cover (%),Remote Sensing
+,VagrLichenCover_FH,Between-Canopy Vagrant Lichen Cover (%),Remote Sensing
 ,LichenMossCover_FH,Between-Canopy Lichen and Moss Cover (%),Remote Sensing
+,DepSoilCover_FH,Between-Canopy Deposited Soil Cover (%),Remote Sensing
 ,WaterCover_FH,Between-Canopy Water Cover (%),Remote Sensing
+,NonInvPerenForbCover_FH,"Non-invasive Perennial Forb Cover (%, first hit)",Remote Sensing
+,NonInvAnnForbCover_FH,"Non-invasive Annual Forb Cover  (%, first hit)",Remote Sensing
+,NonInvPerenGrassCover_FH,"Non-invasive Perennial Grass Cover  (%, first hit)",Remote Sensing
+,NonInvAnnGrassCover_FH,"Non-invasive Annual Grass Cover  (%, first hit)",Remote Sensing
+,NonInvSucculentCover_FH,"Non-invasive Succulent Cover  (%, first hit)",Remote Sensing
+,NonInvShrubCover_FH,"Non-invasive Shrub Cover  (%, first hit)",Remote Sensing
+,NonInvSubShrubCover_FH,"Non-invasive Sub-shrub Cover  (%, first hit)",Remote Sensing
+,NonInvTreeCover_FH,"Non-invasive Tree Cover  (%, first hit)",Remote Sensing
+,InvPerenForbCover_FH,"Non-invasive Perennial Forb Cover  (%, first hit)",Remote Sensing
+,InvAnnForbCover_FH,"Invasive Annual Forb Cover  (%, first hit)",Remote Sensing
+,InvPerenGrassCover_FH,"Invasive Perennial Grass Cover  (%, first hit)",Remote Sensing
+,InvAnnGrassCover_FH,"Invasive Annual Grass Cover  (%, first hit)",Remote Sensing
+,InvSucculentCover_FH,"Invasive Succulent Cover  (%, first hit)",Remote Sensing
+,InvShrubCover_FH,"Invasive Shrub Cover  (%, first hit)",Remote Sensing
+,InvSubShrubCover_FH,"Invasive Sub-shrub Cover  (%, first hit)",Remote Sensing
+,InvTreeCover_FH,"Invasive Tree Cover  (%, first hit)",Remote Sensing
+,SageBrushCover_FH,"Sagebrush Cover  (%, first hit)",Remote Sensing

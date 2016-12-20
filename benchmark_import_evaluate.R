@@ -16,7 +16,7 @@ tdat <- merge(terradat.terrestrial.spdf@data, terradat.remote.spdf@data)
 indicator.lut <- read.csv("C:/Users/nstauffe/Documents/Projects/AIM_Analysis/tdat_indicator_lut.csv", stringsAsFactors = F)
 
 ## Import the spreadsheet from the workbook. Should work regardless of presence/absence of other spreadsheets as long as the name is the same
-benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Downloads/TerrestrialAIM_DataAnalysis_Template_NS191216.xlsx",
+benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Documents/Projects/AIM_Analysis/TerrestrialAIM_DataAnalysis_Template.xlsx",
                     sheetName = "Monitoring Objectives",
                     header = T,
                     stringsAsFactors = F)
@@ -29,12 +29,12 @@ benchmarks$eval.string.lower <- paste0(benchmarks$Lower.Limit, benchmarks$LL.Rel
 benchmarks$eval.string.upper <- paste0(benchmarks$UL.Relation, benchmarks$Upper.Limit)
 
 ## Reorder the data frame
-benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name") %>%
-  .[,c("Management.Question", "Benchmark.Source", "Evaluation.Stratum", "Lower.Limit", "LL.Relation", "Indicator", "UL.Relation", "Upper.Limit", "Unit", "Classification", "Minimum.Proportion", "eval.string.lower", "eval.string.upper", "indicator.tdat")]
+benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name")
 
 ## Slicing the data frame from terradat.spdf
-## Not technically necessary
-tdat <- terradat.spdf@data[grepl(x = terradat.spdf@data$ProjectName, pattern = "rgdnnm", ignore.case = T),]
+## This step depends on how you're attributing the points with evaluation strata.
+## If they aren't constrained somehow to the project you intend, then something along these lines needs to happen
+tdat <- tdat[grepl(x = tdat$ProjectName, pattern = "rgdnnm", ignore.case = T),]
 
 ## To properly assign, see eval_stratum_attribution_functions.R
 tdat$Evaluation.Stratum <- "Loamy"
@@ -43,8 +43,30 @@ tdat$Evaluation.Stratum <- "Loamy"
 tdat <- tdat[!is.na(tdat$Evaluation.Stratum),]
 
 ## Making a tall version of the data frame
+## Indicators listed in order of appearance in TerrADat, line breaks inserted at thematic breaks
 tdat.tall <- gather(tdat, Indicator, Value,
-                    GapPct_25_50,GapPct_51_100,GapPct_101_200,GapPct_200_plus,GapPct_25_plus,BareSoilCover_FH,TotalFoliarCover_FH,NonInvPerenForbCover_AH,NonInvAnnForbCover_AH,NonInvPerenGrassCover_AH,NonInvAnnGrassCover_AH,NonInvAnnForbGrassCover_AH,NonInvPerenForbGrassCover_AH,NonInvSucculentCover_AH,NonInvShrubCover_AH,NonInvSubShrubCover_AH,NonInvTreeCover_AH,InvPerenForbCover_AH,InvAnnForbCover_AH,InvPerenGrassCover_AH,InvAnnGrassCover_AH,InvAnnForbGrassCover_AH,InvPerenForbGrassCover_AH,InvSucculentCover_AH,InvShrubCover_AH,InvSubShrubCover_AH,InvTreeCover_AH,SagebrushCover_AH,WoodyHgt_Avg,HerbaceousHgt_Avg,SagebrushHgt_Avg,OtherShrubHgt_Avg,NonInvPerenGrassHgt_Avg,InvPerenGrassHgt_Avg,InvPlantCover_AH,InvPlant_NumSp,SoilStability_All,SoilStability_Protected,SoilStability_Unprotected)
+                    ## Terrestrial AIM values first
+                    GapPct_25_50,GapPct_51_100,GapPct_101_200,GapPct_200_plus,GapPct_25_plus,
+                    BareSoilCover_FH,TotalFoliarCover_FH,
+                    NonInvPerenForbCover_AH,NonInvAnnForbCover_AH,NonInvPerenGrassCover_AH,NonInvAnnGrassCover_AH,NonInvAnnForbGrassCover_AH,NonInvPerenForbGrassCover_AH,
+                    NonInvSucculentCover_AH,NonInvShrubCover_AH,NonInvSubShrubCover_AH,NonInvTreeCover_AH,
+                    InvPerenForbCover_AH,InvAnnForbCover_AH,InvPerenGrassCover_AH,InvAnnGrassCover_AH,InvAnnForbGrassCover_AH,InvPerenForbGrassCover_AH,
+                    InvSucculentCover_AH,InvShrubCover_AH,InvSubShrubCover_AH,InvTreeCover_AH,
+                    SagebrushCover_AH,
+                    WoodyHgt_Avg,HerbaceousHgt_Avg,SagebrushHgt_Avg,OtherShrubHgt_Avg,
+                    NonInvPerenGrassHgt_Avg,InvPerenGrassHgt_Avg,
+                    InvPlantCover_AH,
+                    InvPlant_NumSp,
+                    SoilStability_All,SoilStability_Protected,SoilStability_Unprotected,
+                    ## Remote sensing values
+                    HerbLitterCover_FH,WoodyLitterCover_FH,EmbLitterCover_FH,TotalLitterCover_FH,
+                    RockCover_FH,BiologicalCrustCover_FH,VagrLichenCover_FH,LichenMossCover_FH,
+                    DepSoilCover_FH,WaterCover_FH,
+                    NonInvPerenForbCover_FH,NonInvAnnForbCover_FH,NonInvPerenGrassCover_FH,NonInvAnnGrassCover_FH,
+                    NonInvSucculentCover_FH,NonInvShrubCover_FH,NonInvSubShrubCover_FH,NonInvTreeCover_FH,
+                    InvPerenForbCover_FH,InvAnnForbCover_FH,InvPerenGrassCover_FH,InvAnnGrassCover_FH,
+                    InvSucculentCover_FH,InvShrubCover_FH,InvSubShrubCover_FH,InvTreeCover_FH,
+                    SageBrushCover_FH)
 
 ## Merge the tall TerrADat with the benchmark information
 tdat.tall.benched <- merge(x = tdat.tall, y = benchmarks[, c("Evaluation.Stratum", "indicator.tdat", "Classification", "eval.string.lower", "eval.string.upper")], by.x = c("Evaluation.Stratum", "Indicator"), by.y = c("Evaluation.Stratum", "indicator.tdat"))
