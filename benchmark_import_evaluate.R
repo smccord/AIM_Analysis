@@ -16,7 +16,7 @@ tdat <- merge(terradat.terrestrial.spdf@data, terradat.remote.spdf@data)
 indicator.lut <- read.csv("C:/Users/nstauffe/Documents/Projects/AIM_Analysis/tdat_indicator_lut.csv", stringsAsFactors = F)
 
 ## Import the spreadsheet from the workbook. Should work regardless of presence/absence of other spreadsheets as long as the name is the same
-benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Downloads/TerrestrialAIM_DataAnalysis_Template_NS191216.xlsx",
+benchmarks.raw <- read.xlsx(file = "C:/Users/nstauffe/Documents/Projects/AIM_Analysis/TerrestrialAIM_DataAnalysis_Template.xlsx",
                     sheetName = "Monitoring Objectives",
                     header = T,
                     stringsAsFactors = F)
@@ -29,12 +29,12 @@ benchmarks$eval.string.lower <- paste0(benchmarks$Lower.Limit, benchmarks$LL.Rel
 benchmarks$eval.string.upper <- paste0(benchmarks$UL.Relation, benchmarks$Upper.Limit)
 
 ## Reorder the data frame
-benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name") %>%
-  .[,c("Management.Question", "Benchmark.Source", "Evaluation.Stratum", "Lower.Limit", "LL.Relation", "Indicator", "UL.Relation", "Upper.Limit", "Unit", "Classification", "Minimum.Proportion", "eval.string.lower", "eval.string.upper", "indicator.tdat")]
+benchmarks <- merge(x = benchmarks, y = indicator.lut, by.x = "Indicator", by.y = "indicator.name")
 
 ## Slicing the data frame from terradat.spdf
-## Not technically necessary
-tdat <- terradat.spdf@data[grepl(x = terradat.spdf@data$ProjectName, pattern = "rgdnnm", ignore.case = T),]
+## This step depends on how you're attributing the points with evaluation strata.
+## If they aren't constrained somehow to the project you intend, then something along these lines needs to happen
+tdat <- tdat[grepl(x = tdat$ProjectName, pattern = "rgdnnm", ignore.case = T),]
 
 ## To properly assign, see eval_stratum_attribution_functions.R
 tdat$Evaluation.Stratum <- "Loamy"
