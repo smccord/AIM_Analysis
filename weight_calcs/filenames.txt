@@ -1,0 +1,3 @@
+wd                         src                           output     fate   terra              frame                   table
+"u:/aim/geo/lander/"  "u:/aim/geo/lander/"  "u:/aim/geo/lander/crap"   none   aimpts_2015_proj   landerpolystrata     summary.out
+
