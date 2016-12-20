@@ -3,9 +3,7 @@ library(dplyr)
 library(rgdal)
 library(tidyr)
 
-## TODO: Handle missing minimum required percentage of landscape values. If there's nothing, just be cool/substitute 0?
 ## TODO: Make sure that it only deals with rows where indicators are valid/selected and the top and bottom evalutions have been set
-## TODO: Flag plots that don't end up with classifications?
 
 data.path <- "C:/Users/nstauffe/Documents/Projects/AIM_Analysis"
 tdat.path <- "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/Terradat_data_8.17.15_complete.gdb"
