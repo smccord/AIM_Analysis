@@ -63,3 +63,4 @@ Soil Stability Unprotected Surface Rating,SoilStability_Unprotected,Unprotected 
 ,InvShrubCover_FH,"Invasive Shrub Cover  (%, first hit)",Remote Sensing
 ,InvSubShrubCover_FH,"Invasive Sub-shrub Cover  (%, first hit)",Remote Sensing
 ,InvTreeCover_FH,"Invasive Tree Cover  (%, first hit)",Remote Sensing
+,SageBrushCover_FH,"Sagebrush Cover  (%, first hit)",Remote Sensing
