@@ -17,6 +17,7 @@ attribute.shapefile <- function(points = SpatialPointsDataFrame( coords = matrix
                                 datapath = "", ## If the shape is in a .gdb feature class then this should be the full path, including the file extension .gdb. If the SPDF is already made, do not specify this argument
                                 shape = "", ## The name of the shapefile or feature class !!!OR!!! an SPDF
                                 attributefield = "", ## Name of the field in the shape that specifies the evaluation stratum
+                                dropNA = T, ## Strip out points that did not qualify for an attribution stratum
                                 projection = CRS("+proj=longlat +ellps=GRS80 +datum=NAD83 +no_defs")){
   ## Strip the file extension from shape, just in case it was there
   shape <- str_replace(shape, pattern = "\\.[Ss][Hh][Pp]$", replacement = "")
@@ -33,13 +34,18 @@ attribute.shapefile <- function(points = SpatialPointsDataFrame( coords = matrix
   }
   points.evalstrata <- over(points, shapefile)[, attributefield]
   names(points.evalstrata)[names(points.evalstrata) == attributefield] <- "Evaluation.Stratum"
-  return(cbind(points, points.evalstrata))
+  output <- cbind(points, points.evalstrata)
+  if (dropNA) {
+    output <- output[!is.na(output$Evaluation.Stratum),]
+  }
+  return(output)
 }
 
 ## Function to import .csv that attributes the plots matching the PLOT column with evaluation strata from the EVAL.STRATUM column
 attribute.list <- function(points = points = SpatialPointsDataFrame( coords = matrix(1:2,1:2), data = data.frame(matrix(1:2,1:2))),
                            datapath = "", ## Only specify if you need to read in the lookup table from a file
-                           lut = "" ## Either the filename !!!OR!!! a data frame. Either way it needs a PlotID column and an Evaluation.Stratum column
+                           lut = "", ## Either the filename !!!OR!!! a data frame. Either way it needs a PlotID column and an Evaluation.Stratum column
+                           dropNA = T ## Strip out points that did not qualify for an attribution stratum
                            ){
   ## Sanitize the input
   datapath <- str_replace(datapath, pattern =  "/$", replacement = "")
@@ -49,13 +55,18 @@ attribute.list <- function(points = points = SpatialPointsDataFrame( coords = ma
   } else if (!is.data.frame(lut) & grepl(x = lut, pattern = "\\.[Cc][Ss][Vv]$")) {
     lut <- read.csv(paste0(datapath, "/", lut), stringsAsFactors = F)[, c("PlotID", "Evaluation.Stratum")]
   }
-  return(merge(points, lut))
+  output <- merge(points, lut)
+  if (dropNA) {
+    output <- output[!is.na(output$Evaluation.Stratum),]
+  }
+  return(output)
 }
 
 ## TODO: Function to import .csv or .xlsx to function as a lookup table with columns for TerrADat/MS field, field values, and evaluation strata
 attribute.field <- function(points = points = SpatialPointsDataFrame( coords = matrix(1:2,1:2), data = data.frame(matrix(1:2,1:2))),
                             datapath = "", ## Only specify if you need to read in the lookup table from a file
-                            lut = "" ## Either the filename !!!OR!!! a data frame. Either way it needs the columns Attribute.Field, Field.Value, Evaluation.Stratum
+                            lut = "", ## Either the filename !!!OR!!! a data frame. Either way it needs the columns Attribute.Field, Field.Value, Evaluation.Stratum
+                            dropNA = T, ## Strip out points that did not qualify for an attribution stratum
                             ){
   ## Sanitize the input
   datapath <- str_replace(datapath, pattern =  "/$", replacement = "")
@@ -68,5 +79,9 @@ attribute.field <- function(points = points = SpatialPointsDataFrame( coords = m
   for (n in 1:nrow(lut)) {
     points$Evaluation.Stratum[points[, lut$Attribute.Field[n]] == lut$Attribute.Value[n]] <- lut$Evaluation.Stratum[n]
   }
-  return(points)
+  output <- points
+  if (dropNA) {
+    output <- output[!is.na(output$Evaluation.Stratum),]
+  }
+  return(output)
 }
