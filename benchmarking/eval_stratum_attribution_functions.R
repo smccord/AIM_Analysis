@@ -10,7 +10,7 @@
 
 
 
-## TODO: Function to make sure that no plot has received more than one evaluation stratum if multiple attribution functions were used
+## TODO: Create multiple rows for points that have multiple evaluation strata that they belong to. Really only an issue for the spatial stuff
 
 ## Shapefile attribute extraction function where the shapefile attribute table contains the evaluation stratum (possibly strata)
 attribute.shapefile <- function(points = SpatialPointsDataFrame( coords = matrix(1:2,1:2), data = data.frame(matrix(1:2,1:2))),
