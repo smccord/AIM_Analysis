@@ -3,7 +3,7 @@ library(dplyr)
 library(rgdal)
 library(tidyr)
 
-## TODO: Make sure that it only deals with rows where indicatrs are valid/selected and the top and bottom evalutions have been set
+## TODO: Make sure that it only deals with rows where indicators are valid/selected and the top and bottom evalutions have been set
 ## TODO: Add coordinates to output
 
 data.path <- "C:/Users/nstauffe/Documents/Projects/AIM_Analysis"
@@ -25,7 +25,7 @@ indicator.lut <- read.csv(paste0(data.path, "/", tdat.indicators.lut), stringsAs
 read.benchmarks <- function(data.path = "", ## Path to the folder containing the Data Explorer with the benchmarks in it
                             benchmarks.filename = "", ## The filename of the Data Explorer workbook
                             indicator.lut, ## A lookup table with a column called "indicator.name" matching the values in the Data Explorer "Indicator" field and one called "indicator.tdat" with corresponding value for the indicators' names in TerrADat
-                            indicator.lut.benchmarkfield = "indicator.name", ## In case you are ignoring the instructions for indicator.lut
+                            indicator.lut.benchmarkfield = "indicator.name" ## In case you are ignoring the instructions for indicator.lut
                             ){
   ## Sanitizing inputs because users can't be trusted
   if (!grepl(x = data.path, pattern = "/$")) {
