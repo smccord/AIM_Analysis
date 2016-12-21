@@ -6,13 +6,16 @@ library(tidyr)
 ## TODO: Make sure that it only deals with rows where indicators are valid/selected and the top and bottom evalutions have been set
 ## TODO: Add coordinates to output
 
-data.path <- "C:/Users/nstauffe/Documents/Projects/AIM_Analysis"
-tdat.path <- "C:/Users/nstauffe/Documents/Projects/LandscapeToolbox-NS/Terradat_data_8.17.15_complete.gdb"
+data.path <- paste0(getwd(), "/", "data")
+if (!grepl(x = data.path, pattern = "/$")) {
+  data.path <- paste0(data.path, "/")
+}
+tdat.name <- "Terradat_data_8.17.15_complete.gdb"
 benchmarks.filename <- "TerrestrialAIM_DataAnalysis_Template.xlsx"
 tdat.indicators.lut <- "tdat_indicator_lut.csv"
 
 ## Get TerrADat imported
-tdat.terrestrial.spdf <- readOGR(dsn = tdat.path, layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
+tdat.terrestrial.spdf <- readOGR(dsn = paste0(data.path, tdat.name), layer = "SV_IND_TERRESTRIALAIM", stringsAsFactors = F)
 tdat.remote.spdf <- readOGR(dsn = tdat.path, layer = "SV_IND_REMOTESENSING", stringsAsFactors = F)
 tdat.prj <- proj4string(tdat.terrestrial.spdf)
 tdat.spdf <- merge(tdat.terrestrial.spdf, tdat.remote.spdf)
